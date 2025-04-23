@@ -6,7 +6,7 @@
 
 using uint = unsigned int;
 
-static const uint c_numBits = 6;
+static const uint c_numBits = 5;
 
 // The Thue-Morse bit at index i is the sum of the 1 bts in the binary number i, modulo 2
 std::string ThueMorse(uint n)
