@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <string>
 #include <bit>
-#include <set> // intentionally ordered
+#include <unordered_set>
+#include <vector>
 
 using uint = unsigned int;
 
-static const uint c_numBits = 5;
+static const uint c_numBits = 6;
 
 // The Thue-Morse bit at index i is the sum of the 1 bts in the binary number i, modulo 2
 std::string ThueMorse(uint n)
@@ -33,47 +34,50 @@ std::string BitInverse(const std::string& s)
 	return ret;
 }
 
-uint Pow2LT(uint n)
+uint Pow2LTE(uint n)
 {
 	uint ret = 1;
-	while (ret * 2 < n)
+	while (ret * 2 <= n)
 		ret *= 2;
 	return ret;
 }
 
-void ScanSubstrings(const std::string& s, unsigned int length, std::set<std::string>& uniques)
+void ScanSubstrings(const std::string& s, unsigned int length, std::unordered_set<std::string>& uniques, std::vector<std::string>& orderedUniques)
 {
 	uint maxOffset = (uint)s.length() - length + 1;
 	for (uint offset = 0; offset < maxOffset; ++offset)
 	{
-		auto blah = s.substr(offset, length);
-		uniques.insert(s.substr(offset, length));
+		std::string newString = s.substr(offset, length);
+		if (uniques.count(newString) == 0)
+		{
+			orderedUniques.push_back(newString);
+			uniques.insert(newString);
+		}
 	}
 }
 
 int main(int argc, char** argv)
 {
-	uint M = Pow2LT(c_numBits);
+	uint M = Pow2LTE(c_numBits);
 	std::string A = ThueMorse(M);
 	std::string B = BitInverse(A);
 
-	std::set<std::string> uniques;
+	std::unordered_set<std::string> uniques;
+	std::vector<std::string> orderedUniques;
 
-	ScanSubstrings(A + A, c_numBits, uniques);
-	ScanSubstrings(A + B, c_numBits, uniques);
-	ScanSubstrings(B + A, c_numBits, uniques);
-	ScanSubstrings(B + B, c_numBits, uniques);
+	ScanSubstrings(A + B, c_numBits, uniques, orderedUniques);
+	ScanSubstrings(B + B, c_numBits, uniques, orderedUniques);
+	ScanSubstrings(B + A, c_numBits, uniques, orderedUniques);
+	ScanSubstrings(A + A, c_numBits, uniques, orderedUniques);
 
 	printf("Unique %u bit strings in the Thue-Morse sequence:\n", c_numBits);
 
-	for (const std::string& s : uniques)
+	for (const std::string& s : orderedUniques)
 		printf("    %s\n", s.c_str());
 	printf("%u strings total\n", (uint)uniques.size());
 
 	return 0;
 }
-
-// TODO: make them be in order found though.
 
 /*
 To generate the unique set of N bit strings found in the Thue-Morse sequence...
@@ -96,7 +100,13 @@ AB
 BA
 BB
 
-That's a little more efficient because there are no duplicates of letter combinations
+That's a little more efficient because there are no duplicates of letter combinations being scanned.
 
-Thanks to ryg for working through this with me!
+To make them be in the order they are found in the actual sequence, we can instead scan them in this order:
+AB
+BB
+BA
+AA
+
+Thanks to ryg for working through some of this with me!
 */
