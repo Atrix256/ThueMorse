@@ -8,6 +8,7 @@
 using uint = unsigned int;
 
 static const uint c_numBits = 5;
+static const uint c_ARTSequenceLetters = 32;
 
 // The Thue-Morse bit at index i is the sum of the 1 bts in the binary number i, modulo 2
 std::string ThueMorse(uint n)
@@ -99,6 +100,23 @@ struct SymbolInfo
 	char child1Letter = '-';
 };
 
+char GetLetterFromLetterIndex(uint letterIndex)
+{
+	if (letterIndex < 26)
+		return 'A' + char(letterIndex);
+	letterIndex -= 26;
+
+	if (letterIndex < 10)
+		return '0' + char(letterIndex);
+	letterIndex -= 10;
+
+	if (letterIndex < 26)
+		return 'a' + char(letterIndex);
+	letterIndex -= 26;
+
+	return '?';
+}
+
 int main(int argc, char** argv)
 {
 	std::unordered_set<std::string> uniques;
@@ -128,14 +146,14 @@ int main(int argc, char** argv)
 	std::unordered_map<std::string, SymbolInfo> symbolInfo;
 	{
 		// make the bits and letter for each
-		char letter = 'A';
+		uint letterIndex = 0;
 		for (const std::string& s : orderedUniques)
 		{
 			SymbolInfo newSymbol;
 			newSymbol.bits = s;
-			newSymbol.letter = letter;
+			newSymbol.letter = GetLetterFromLetterIndex(letterIndex);
 			symbolInfo[s] = newSymbol;
-			letter++;
+			letterIndex++;
 		}
 
 		// find the on0 and on1 siblings
@@ -191,7 +209,21 @@ int main(int argc, char** argv)
 	}
 	printf("%u strings total\n", (uint)uniques.size());
 
-	// TODO: Print out the art sequence
+	// Print out the ART sequence
+	{
+		printf("\nThe first %u symbols of the Thue-Morse sequence:\n", c_ARTSequenceLetters);
+		std::string bits = ThueMorse(c_numBits + c_ARTSequenceLetters);
+		printf("bits = %s\nsymbols: ", bits.c_str());
+
+		for (uint i = 0; i < c_ARTSequenceLetters; ++i)
+		{
+			std::string s = bits.substr(i, c_numBits);
+
+			auto it = symbolInfo.find(s);
+			printf("%c", (it == symbolInfo.end()) ? '?' : it->second.letter);
+		}
+		printf("\n");
+	}
 
 	return 0;
 }
