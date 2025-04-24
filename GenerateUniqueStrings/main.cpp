@@ -234,6 +234,19 @@ int main(int argc, char** argv)
 }
 
 /*
+TODO:
+* could make a 1d tiling example
+* and then a 2d tiling example.
+* and 2d mitchell's best candidate - with recursion?
+
+Blog Post:
+Adaptive Regular Tiles (ART) - A tiling system for use in procedural generation and beyond.
+https://www.cs.jhu.edu/~misha/ReadingSeminar/Papers/Ahmed17.pdf
+https://www.youtube.com/watch?v=N92gPD1Nuek
+
+*/
+
+/*
 To generate the unique set of N bit strings found in the Thue-Morse sequence...
 1) Find a pow of 2 M <= N. Generate the sequence of that size, call it A.
 2) Bit reverse it to generate the next M items in the sequence, call it B.
