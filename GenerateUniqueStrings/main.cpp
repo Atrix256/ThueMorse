@@ -23,12 +23,12 @@ std::string ThueMorse(uint n)
 	return ret;
 }
 
-// Double the size of the Thue-Morse sequence given, using string substitution.
-// The subsequence doesn't have to start at the beginning of the sequence.
-// If src is length N, this will give the next N entries in the Thue-Morse sequence.
+// Equation 3 from https://www.cs.jhu.edu/~misha/ReadingSeminar/Papers/Ahmed17.pdf
 // 0 -> 01
 // 1 -> 10
-std::string ThueMorseSequenceDouble(const std::string& src)
+// The Thue-Morse sequence is a fixed point of this mapping - This mapping will
+// make the sequence longer, but any existing digits will remain the same.
+std::string ThueMorseHomomorphism(const std::string& src)
 {
 	std::string ret;
 	for (char c : src)
@@ -101,18 +101,28 @@ struct SymbolInfo
 
 int main(int argc, char** argv)
 {
-	// Make A and B
-	uint M = Pow2LTE(c_numBits);
-	std::string A = ThueMorse(M);
-	std::string B = BitInverse(A);
-
-	// Scan for unique symbols
 	std::unordered_set<std::string> uniques;
 	std::vector<std::string> orderedUniques;
-	ScanSubstrings(A + B, c_numBits, uniques, orderedUniques);
-	ScanSubstrings(B + B, c_numBits, uniques, orderedUniques);
-	ScanSubstrings(B + A, c_numBits, uniques, orderedUniques);
-	ScanSubstrings(A + A, c_numBits, uniques, orderedUniques);
+
+	{
+#if 0
+		// Make A and B
+		uint M = Pow2LTE(c_numBits);
+		std::string A = ThueMorse(M);
+		std::string B = BitInverse(A);
+
+		// Scan for unique symbols
+		ScanSubstrings(A + B, c_numBits, uniques, orderedUniques);
+		ScanSubstrings(B + B, c_numBits, uniques, orderedUniques);
+		ScanSubstrings(B + A, c_numBits, uniques, orderedUniques);
+		ScanSubstrings(A + A, c_numBits, uniques, orderedUniques);
+#else
+		// Scan the full set: ABBABAAB
+		uint M = Pow2LTE(c_numBits) * 8;
+		std::string A = ThueMorse(M);
+		ScanSubstrings(A, c_numBits, uniques, orderedUniques);
+#endif
+	}
 
 	// make the symbol info
 	std::unordered_map<std::string, SymbolInfo> symbolInfo;
@@ -160,13 +170,15 @@ int main(int argc, char** argv)
 		for (auto& symbolPair : symbolInfo)
 		{
 			SymbolInfo& info = symbolPair.second;
-			info.morphedIDBits = ThueMorseSequenceDouble(info.bits);
+			info.morphedIDBits = ThueMorseHomomorphism(info.bits);
 
 			info.child0Bits = info.morphedIDBits.substr(c_numBits * 2 - c_numBits - 1, c_numBits);
-			info.child0Letter = symbolInfo[info.child0Bits].letter;
+			if (symbolInfo.find(info.child0Bits) != symbolInfo.end())
+				info.child0Letter = symbolInfo[info.child0Bits].letter;
 
 			info.child1Bits = info.morphedIDBits.substr(c_numBits * 2 - c_numBits, c_numBits);
-			info.child1Letter = symbolInfo[info.child1Bits].letter;
+			if (symbolInfo.find(info.child1Bits) != symbolInfo.end())
+				info.child1Letter = symbolInfo[info.child1Bits].letter;
 		}
 	}
 
@@ -212,6 +224,8 @@ AB
 BB
 BA
 AA
+
+TODO: 7 bits didn't work with the logic as I implemented it so i went back to just looking at M*8. investigate why.
 
 Thanks to ryg for working through some of this with me!
 */
