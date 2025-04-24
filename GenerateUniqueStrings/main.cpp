@@ -240,7 +240,7 @@ TODO:
 * and 2d mitchell's best candidate - with recursion?
 
 Blog Post:
-Adaptive Regular Tiles (ART) - A tiling system for use in procedural generation and beyond.
+Adaptive Regular Tiles (ART) - A (Recursive!) Tiling System For Procedural Generation and More
 https://www.cs.jhu.edu/~misha/ReadingSeminar/Papers/Ahmed17.pdf
 https://www.youtube.com/watch?v=N92gPD1Nuek
 
