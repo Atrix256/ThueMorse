@@ -29,6 +29,11 @@ std::string ThueMorse(uint n)
 // 1 -> 10
 // The Thue-Morse sequence is a fixed point of this mapping - This mapping will
 // make the sequence longer, but any existing digits will remain the same.
+// That is not strictly true when taking substrings from the middle of the sequence.
+//
+// Example: "10010" does have this property and becomes "1001011001, but removing the
+// first digit from that example to make "0010" does not have this property and ends up
+// being transformed into "01011001".
 std::string ThueMorseHomomorphism(const std::string& src)
 {
 	std::string ret;
