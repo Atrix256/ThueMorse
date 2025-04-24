@@ -212,8 +212,8 @@ int main(int argc, char** argv)
 	// Print out the ART sequence
 	{
 		printf("\nThe first %u symbols of the Thue-Morse sequence:\n", c_ARTSequenceLetters);
-		std::string bits = ThueMorse(c_numBits + c_ARTSequenceLetters);
-		printf("bits = %s\nsymbols: ", bits.c_str());
+		std::string bits = ThueMorse(c_numBits + c_ARTSequenceLetters - 1);
+		printf("bits   : %s\nsymbols: ", bits.c_str());
 
 		for (uint i = 0; i < c_ARTSequenceLetters; ++i)
 		{
