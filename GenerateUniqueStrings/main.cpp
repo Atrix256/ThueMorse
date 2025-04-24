@@ -226,6 +226,16 @@ BA
 AA
 
 TODO: 7 bits didn't work with the logic as I implemented it so i went back to just looking at M*8. investigate why.
+I think this is because with M = 4, it can span 3 symbols and there are more combinations.
+AAB
+ABA
+ABB
+BAA
+BAB
+BBA
+Note these though since the sequence is cube free:
+AAA
+BBB
 
 Thanks to ryg for working through some of this with me!
 */
