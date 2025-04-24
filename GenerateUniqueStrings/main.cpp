@@ -265,7 +265,7 @@ ABB
 BAA
 BAB
 BBA
-Note these though since the sequence is cube free:
+Not these though since the sequence is cube free:
 AAA
 BBB
 
